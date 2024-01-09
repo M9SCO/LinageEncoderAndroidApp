@@ -147,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
         textViewStatusConnect.setText(R.string.doconnect);
         connectButton.setActivated(false);
 
+
+
         MyBluetoothDevice mdevice = (MyBluetoothDevice) spinner.getSelectedItem();
         arduinoBTModule = mdevice.mDevice;
         arduinoUUID = arduinoBTModule.getUuids()[0].getUuid();
@@ -164,25 +166,36 @@ public class MainActivity extends AppCompatActivity {
     public void updateLinages(String data){
 
 
-        String[] elements = data.replace("\r\n", "").split("|");
-        if(elements.length != 3) return;
+        String[] elements = data.replace("\r\n", "").split("\\|");
+        if(elements.length != 2) {
+            Toast.makeText(MainActivity.this, "Receive ivalid row: "+ data , Toast.LENGTH_SHORT).show();
 
-        X = Float.parseFloat(elements[0])/ 10_000; // сразу в см
-        Y = Float.parseFloat(elements[2])/ 10_000; // сразу в см
+            return;
 
-        textViewValueX.setText(new Float(X-OffsetX).toString());
-        textViewValueY.setText(new Float(Y-OffsetY).toString());
+        }
+
+        X = Float.parseFloat(elements[0])/ 1_000; // сразу в см
+        Y = Float.parseFloat(elements[1])/ 1_000; // сразу в см
+
+        updateLinages();
     }
 
     public void SetOffsetX(View view){
         OffsetX = X;
+        updateLinages();
+
     }
 
     public void SetOffsetY(View view){
         OffsetY = Y;
-
+        updateLinages();
     }
 
+
+    public void updateLinages(){
+        textViewValueX.setText(new Float(X-OffsetX).toString());
+        textViewValueY.setText(new Float(Y-OffsetY).toString());
+    }
 
 }
 
